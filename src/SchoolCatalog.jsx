@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 export default function SchoolCatalog() {
   const [courses, setCourses] = useState([]);
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -20,10 +21,20 @@ export default function SchoolCatalog() {
     fetchCourses();
   }, []);
 
+  const filteredCourses = courses.filter(
+    (course) =>
+      course.courseNumber.toLowerCase().includes(filter.toLowerCase()) ||
+      course.courseName.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
     <div className="school-catalog">
       <h1>School Catalog</h1>
-      <input type="text" placeholder="Search" />
+      <input
+        type="text"
+        placeholder="Search"
+        onChange={(e) => setFilter(e.target.value)}
+      />
       <table>
         <thead>
           <tr>
@@ -36,7 +47,7 @@ export default function SchoolCatalog() {
           </tr>
         </thead>
         <tbody>
-          {courses.map((course) => (
+          {filteredCourses.map((course) => (
             <tr key={course.id}>
               <td>{course.trimester}</td>
               <td>{course.courseNumber}</td>
