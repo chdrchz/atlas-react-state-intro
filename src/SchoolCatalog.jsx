@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const PAGE_SIZE = 10; // Define page size constant
+const PAGE_SIZE = 5;
 
 export default function SchoolCatalog() {
   const [courses, setCourses] = useState([]);
