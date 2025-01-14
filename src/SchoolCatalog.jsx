@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 export default function SchoolCatalog() {
   const [courses, setCourses] = useState([]);
   const [filter, setFilter] = useState("");
+  const [sort, setSort] = useState("");
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -27,6 +28,19 @@ export default function SchoolCatalog() {
       course.courseName.toLowerCase().includes(filter.toLowerCase())
   );
 
+  const handleSort = (columnName) => {
+    const sortedCourses = [...courses].sort((a, b) => {
+      if (sort) {
+        return a[columnName] > b[columnName] ? 1 : -1;
+      } else {
+        return a[columnName] < b[columnName] ? 1 : -1;
+      }
+    });
+    setCourses(sortedCourses);
+    setSort(!sort);
+    console.log("Reversed order");
+  };
+
   return (
     <div className="school-catalog">
       <h1>School Catalog</h1>
@@ -38,11 +52,15 @@ export default function SchoolCatalog() {
       <table>
         <thead>
           <tr>
-            <th>Trimester</th>
-            <th>Course Number</th>
-            <th>Course Name</th>
-            <th>Semester Credits</th>
-            <th>Total Clock Hours</th>
+            <th onClick={() => handleSort("trimester")}>Trimester</th>
+            <th onClick={() => handleSort("courseNumber")}>Course Number</th>
+            <th onClick={() => handleSort("courseName")}>Course Name</th>
+            <th onClick={() => handleSort("semesterCredits")}>
+              Semester Credits
+            </th>
+            <th onClick={() => handleSort("totalClockHours")}>
+              Total Clock Hours
+            </th>
             <th>Enroll</th>
           </tr>
         </thead>
