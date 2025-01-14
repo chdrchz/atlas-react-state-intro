@@ -37,7 +37,7 @@ export default function SchoolCatalog() {
       }
     });
     setCourses(sortedCourses);
-    setSort(!sort);
+    setSort(!sort); // This is direction
     console.log("Reversed order");
   };
 
