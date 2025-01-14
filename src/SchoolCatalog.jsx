@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 
+const PAGE_SIZE = 10; // Define page size constant
+
 export default function SchoolCatalog() {
   const [courses, setCourses] = useState([]);
   const [filter, setFilter] = useState("");
   const [sort, setSort] = useState("");
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -38,8 +41,19 @@ export default function SchoolCatalog() {
     });
     setCourses(sortedCourses);
     setSort(!sort); // This is direction
-    console.log("Reversed order");
   };
+
+  const currentCourses = filteredCourses.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE
+  );
+
+  const hasMore = filteredCourses.length > page * PAGE_SIZE;
+  const hasLess = page > 1;
+
+  useEffect(() => {
+    setPage(1);
+  }, [filter]);
 
   return (
     <div className="school-catalog">
@@ -47,6 +61,7 @@ export default function SchoolCatalog() {
       <input
         type="text"
         placeholder="Search"
+        value={filter}
         onChange={(e) => setFilter(e.target.value)}
       />
       <table>
@@ -65,7 +80,7 @@ export default function SchoolCatalog() {
           </tr>
         </thead>
         <tbody>
-          {filteredCourses.map((course) => (
+          {currentCourses.map((course) => (
             <tr key={course.id}>
               <td>{course.trimester}</td>
               <td>{course.courseNumber}</td>
@@ -80,8 +95,12 @@ export default function SchoolCatalog() {
         </tbody>
       </table>
       <div className="pagination">
-        <button>Previous</button>
-        <button>Next</button>
+        <button disabled={!hasLess} onClick={() => setPage(page - 1)}>
+          Previous
+        </button>
+        <button disabled={!hasMore} onClick={() => setPage(page + 1)}>
+          Next
+        </button>
       </div>
     </div>
   );
