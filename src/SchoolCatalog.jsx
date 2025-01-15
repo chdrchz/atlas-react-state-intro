@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useAppContext } from "./App";
 
 const PAGE_SIZE = 5;
 
 export default function SchoolCatalog() {
+  const { enrolledCourses, enrollInCourse } = useAppContext();
   const [courses, setCourses] = useState([]);
   const [filter, setFilter] = useState("");
   const [sort, setSort] = useState("");
@@ -51,6 +53,23 @@ export default function SchoolCatalog() {
   const hasMore = filteredCourses.length > page * PAGE_SIZE;
   const hasLess = page > 1;
 
+  const handleEnroll = (course) => {
+    const alreadyEnrolled = enrolledCourses.some(
+      (enrolled) => enrolled.courseNumber === course.courseNumber
+    );
+
+    if (!alreadyEnrolled) {
+      enrollInCourse({
+        id: course.id,
+        trimester: course.trimester,
+        courseNumber: course.courseNumber,
+        courseName: course.courseName,
+        semesterCredits: course.semesterCredits,
+        totalClockHours: course.totalClockHours,
+      });
+    }
+  };
+
   useEffect(() => {
     setPage(1);
   }, [filter]);
@@ -88,7 +107,18 @@ export default function SchoolCatalog() {
               <td>{course.semesterCredits}</td>
               <td>{course.totalClockHours}</td>
               <td>
-                <button>Enroll</button>
+                <button
+                  onClick={() => handleEnroll(course)}
+                  disabled={enrolledCourses.some(
+                    (enrolled) => enrolled.courseNumber === course.courseNumber
+                  )}
+                >
+                  {enrolledCourses.some(
+                    (enrolled) => enrolled.courseNumber === course.courseNumber
+                  )
+                    ? "Enrolled"
+                    : "Enroll"}
+                </button>
               </td>
             </tr>
           ))}
